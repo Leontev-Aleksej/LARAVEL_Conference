@@ -28,24 +28,31 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+    public function store(Request $request)
+{
+    // Валидация входных данных
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'tel' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    // Создание пользователя
+    $user = User::create([
+        'name' => $request->name,
+        'tel' => $request->tel,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        event(new Registered($user));
+    // Запуск события регистрации
+    event(new Registered($user));
 
-        Auth::login($user);
+    // Авторизация пользователя
+    Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
-    }
+    // Перенаправление после успешной регистрации
+    return redirect('/home'); // Замените на ваш маршрут
+}
 }

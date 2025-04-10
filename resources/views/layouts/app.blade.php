@@ -27,6 +27,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                @if (Auth::check())
+    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+        @csrf
+        <button type="submit" class="btn btn-link">Выйти</button>
+    </form>
+@endif
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
@@ -66,6 +73,7 @@
                                     </form>
                                 </div>
                             </li>
+                            
                         @endguest
                     </ul>
                 </div>
